@@ -7,7 +7,8 @@ module.exports = (req, res, next) => {
   const token = extractToken(bearerToken);
   
   try {
-    verifyToken(token);
+    const payload = verifyToken(token);
+    req.user = payload;
     return next();
   } catch (error) {
     console.log(error);
