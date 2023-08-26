@@ -1,5 +1,5 @@
 const validation = require('./validations/validationPostValues');
-const { sequelize, BlogPost, PostCategory } = require('../models');
+const { sequelize, BlogPost, PostCategory, User, Category } = require('../models');
 
 const create = async (payload, post) => {
   const error = await validation.validateNewPost(post);
@@ -23,6 +23,17 @@ const create = async (payload, post) => {
   return { status: 'CREATED', data: result };
 };
 
+const getAll = async () => {
+  const posts = await BlogPost.findAll({
+    include: [
+      { model: User, as: 'user', attributes: { exclude: 'password' } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+  return { status: 'SUCCESSFUL', data: posts };
+};
+
 module.exports = {
   create,
+  getAll,
 };
