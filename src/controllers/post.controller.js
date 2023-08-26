@@ -16,7 +16,16 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
   const { id } = req.params;
   const { status, data } = await postService.getById(id);
+
+  res.status(mapStatusHTTP(status)).json(data);
+};
+
+const update = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
   
+  const { status, data } = await postService.update(id, req.body, userId);
+
   res.status(mapStatusHTTP(status)).json(data);
 };
 
@@ -24,4 +33,5 @@ module.exports = {
   create,
   getAll,
   getById,
+  update,
 };
