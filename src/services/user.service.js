@@ -21,7 +21,16 @@ const getAll = async () => {
   return { status: 'SUCCESSFUL', data };
 };
 
+const getById = async (id) => {
+  const data = await User.findByPk(id, { attributes: { exclude: ['password'] } });
+
+  if (!data) return { status: 'NOT_FOUND', data: { message: 'User does not exist' } };
+
+  return { status: 'SUCCESSFUL', data };
+};
+
 module.exports = {
   create,
   getAll,
+  getById,
 };
