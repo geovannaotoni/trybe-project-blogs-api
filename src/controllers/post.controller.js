@@ -1,49 +1,80 @@
 const { postService } = require('../services');
 const mapStatusHTTP = require('../utils/mapStatusHTTP');
 
-const create = async (req, res) => {
-  const { status, data } = await postService.create(req.user, req.body);
+const errorMessage = 'Ocorreu um erro';
 
-  res.status(mapStatusHTTP(status)).json(data);
+const create = async (req, res) => {
+  try {
+    const { status, data } = await postService.create(req.user, req.body);
+
+    res.status(mapStatusHTTP(status)).json(data);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 const getAll = async (req, res) => {
-  const { status, data } = await postService.getAll();
+  try {
+    const { status, data } = await postService.getAll();
 
-  res.status(mapStatusHTTP(status)).json(data);
+    res.status(mapStatusHTTP(status)).json(data);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 const getById = async (req, res) => {
-  const { id } = req.params;
-  const { status, data } = await postService.getById(id);
+  try {
+    const { id } = req.params;
+    const { status, data } = await postService.getById(id);
 
-  res.status(mapStatusHTTP(status)).json(data);
+    res.status(mapStatusHTTP(status)).json(data);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 const update = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req.user;
-  
-  const { status, data } = await postService.update(id, req.body, userId);
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
 
-  res.status(mapStatusHTTP(status)).json(data);
+    const { status, data } = await postService.update(id, req.body, userId);
+    res.status(mapStatusHTTP(status)).json(data);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 const remove = async (req, res) => {
-  const { id } = req.params;
-  const { userId } = req.user;
+  try {
+    const { id } = req.params;
+    const { userId } = req.user;
 
-  const { status, data } = await postService.remove(id, userId);
-  if (data) return res.status(mapStatusHTTP(status)).json(data);
-  return res.status(mapStatusHTTP(status)).end();
+    const { status, data } = await postService.remove(id, userId);
+    if (data) return res.status(mapStatusHTTP(status)).json(data);
+    return res.status(mapStatusHTTP(status)).end();
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 const search = async (req, res) => {
-  const { q } = req.query;
-
-  const { status, data } = await postService.search(q);
-
-  res.status(mapStatusHTTP(status)).json(data);
+  try {
+    const { q } = req.query;
+  
+    const { status, data } = await postService.search(q);
+  
+    res.status(mapStatusHTTP(status)).json(data);
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).json({ message: errorMessage });
+  }
 };
 
 module.exports = {
