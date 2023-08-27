@@ -20,8 +20,17 @@ const getById = async (req, res) => {
   res.status(mapStatusHTTP(status)).json(data);
 };
 
+const remove = async (req, res) => {
+  const { userId } = req.user;
+  const { status } = await userService.remove(userId);
+
+  // if (data) return res.status(mapStatusHTTP(status)).json(data);
+  return res.status(mapStatusHTTP(status)).end();
+};
+
 module.exports = {
   create,
   getAll,
   getById,
+  remove,
 };
