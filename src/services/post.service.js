@@ -1,3 +1,4 @@
+const { Sequelize } = require('sequelize');
 const validation = require('./validations/validationPostValues');
 const { sequelize, BlogPost, PostCategory, User, Category } = require('../models');
 
@@ -70,10 +71,30 @@ const remove = async (postId, userId) => {
   return { status: 'DELETED' };
 };
 
+const search = async (query) => {
+  const { Op } = Sequelize;
+
+  const posts = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `%${query}%` } },
+        { content: { [Op.like]: `%${query}%` } },
+      ],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: 'password' } },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  return { status: 'SUCCESSFUL', data: posts };
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
   remove,
+  search,
 };
