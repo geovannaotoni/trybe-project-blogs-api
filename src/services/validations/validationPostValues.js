@@ -1,4 +1,5 @@
 const { Category, BlogPost } = require('../../models');
+const checkRequiredFields = require('../../utils/checkRequiredFields');
 
 const validateCategories = async (categoryIds) => {
   const promises = categoryIds.map(async (id) => Category.findByPk(id));
@@ -9,12 +10,10 @@ const validateCategories = async (categoryIds) => {
 };
 
 const validateNewPost = async (post) => {
-  const { title, content, categoryIds } = post;
+  const errorFields = checkRequiredFields(post, ['title', 'content']);
+  if (errorFields) return { status: 'BAD_REQUEST', message: errorFields };
 
-  if (!title || !content) {
-    return { status: 'BAD_REQUEST', message: 'Some required fields are missing' };
-  }
-
+  const { categoryIds } = post;
   if (!categoryIds || categoryIds.length === 0) {
     return { status: 'BAD_REQUEST', message: 'one or more "categoryIds" not found' };
   }
@@ -23,11 +22,8 @@ const validateNewPost = async (post) => {
 };
 
 const validateUpdatePost = async (id, post, userId) => {
-  const { title, content } = post;
-
-  if (!title || !content) {
-    return { status: 'BAD_REQUEST', message: 'Some required fields are missing' };
-  }
+  const errorFields = checkRequiredFields(post, ['title', 'content']);
+  if (errorFields) return { status: 'BAD_REQUEST', message: errorFields };
 
   const blogPost = await BlogPost.findByPk(id);
 
