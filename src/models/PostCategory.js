@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'blog_posts',
         id: 'id',
-      }
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     categoryId: {
       type: DataTypes.INTEGER,
@@ -18,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'categories',
         id: 'id',
-      }
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   },
   {

@@ -21,21 +21,24 @@ const validateNewPost = async (post) => {
   return validateCategories(categoryIds);
 };
 
-const validateUpdatePost = async (id, post, userId) => {
-  const errorFields = checkRequiredFields(post, ['title', 'content']);
-  if (errorFields) return { status: 'BAD_REQUEST', message: errorFields };
-
-  const blogPost = await BlogPost.findByPk(id);
-
-  // essa verificação já é feita no service
-  // if (!blogPost) return { status: 'NOT_FOUND', message: 'Post does not exist' };
+const validateExistPost = async (postId, userId) => {
+  const blogPost = await BlogPost.findByPk(postId);
+  if (!blogPost) return { status: 'NOT_FOUND', message: 'Post does not exist' };
 
   if (blogPost && blogPost.userId !== userId) {
     return { status: 'UNAUTHORIZED', message: 'Unauthorized user' };
   }
 };
 
+const validateUpdatePost = async (id, post, userId) => {
+  const errorFields = checkRequiredFields(post, ['title', 'content']);
+  if (errorFields) return { status: 'BAD_REQUEST', message: errorFields };
+
+  return validateExistPost(id, userId);
+};
+
 module.exports = {
   validateNewPost,
   validateUpdatePost,
+  validateExistPost,
 };

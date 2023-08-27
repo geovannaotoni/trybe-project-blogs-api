@@ -59,9 +59,21 @@ const update = async (postId, post, userId) => {
   return getById(postId);
 };
 
+const remove = async (postId, userId) => {
+  const error = await validation.validateExistPost(postId, userId);
+  if (error) return { status: error.status, data: { message: error.message } };
+
+  await BlogPost.destroy(
+    { where: { id: postId } },
+  );
+
+  return { status: 'DELETED' };
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
+  remove,
 };
